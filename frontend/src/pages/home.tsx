@@ -1,10 +1,31 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import Logo from '../components/logo';
+
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+import api from '../services/api'
+
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 import { AuthContext } from '../hooks/authContext';
 
+import GlobalStyles from '@mui/material/GlobalStyles';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
 const Home: React.FC = () => {
   const { haveUser, user, login, logOut, updateData } = useContext(AuthContext);
+  const [baseLocations, setbaseLocations] = useState<string[]>([''])
+  useEffect(() =>{
+    api.get('get_locations').then(r=>{
+      setbaseLocations(r.data)
+    })
+  }, [])
 
   const handleLogin = useCallback(() => {
     const nome = document.getElementById('nome') as HTMLInputElement;
@@ -30,25 +51,24 @@ const Home: React.FC = () => {
   }, [updateData]);
 
   return (
-    <>
+    <ThemeProvider theme={darkTheme}>
       <div
-        className={`absolute bg-neutral-100/10 backdrop-blur-sm  w-full h-screen z-50 transition-opacity ${
-          haveUser
-            ? 'opacity-0 pointer-events-none'
-            : 'opacity-1 pointer-events-auto'
-        }`}
+        className={`absolute bg-neutral-100/10 backdrop-blur-sm  w-full h-screen z-50 transition-opacity ${haveUser
+          ? 'opacity-0 pointer-events-none'
+          : 'opacity-1 pointer-events-auto'
+          }`}
       >
         <div
-          className={`w-96 flex flex-col bg-stone-100 text-stone-900 mx-auto mt-20 p-4 rounded-xl transition-transform ${
-            haveUser ? '-translate-y-full' : 'translate-y-0'
-          }`}
+          className={`w-96 flex flex-col bg-stone-100 text-stone-900 mx-auto mt-20 p-4 rounded-xl transition-transform ${haveUser ? '-translate-y-full' : 'translate-y-0'
+            }`}
         >
           <div className='flex flex-col  w-full border-b border-b-stone-300 pb-4'>
             <p className='text-3xl'>Olá! </p>
             <p className='text-2xl'>Para começar diga seu nome</p>
           </div>
-          <label htmlFor='nome' className='flex flex-col gap-1 mt-4'>
-            <div className='flex p-1 bg-stone-200 border border-transparent rounded-lg h-10 focus-within:border-fuchsia-500'>
+
+          <label htmlFor='nome' className='flex flex-col gap-1 mt-4 h-14'>
+            <div className=' h-14 flex p-1 bg-stone-200 border border-transparent rounded-lg focus-within:border-fuchsia-500'>
               <input
                 placeholder='Digite seu nome'
                 type='text'
@@ -88,7 +108,7 @@ const Home: React.FC = () => {
           <div className='w-full bg-stone-800 pt-4 flex gap-2'>
             <label htmlFor='nascimento' className='flex flex-col gap-1'>
               <strong className='font-medium ml-2'>Data de Nascimento</strong>
-              <div className='flex p-1 bg-stone-700 rounded-lg h-10 border border-transparent focus-within:border-fuchsia-500'>
+              <div className='flex p-1 bg-stone-700 rounded-lg h-14 border border-transparent focus-within:border-fuchsia-500'>
                 <input
                   type='date'
                   id='nascimento'
@@ -101,14 +121,14 @@ const Home: React.FC = () => {
               className='w-full flex-1 flex flex-col gap-1'
             >
               <strong className='font-medium ml-2'>Cidade onde mora</strong>
-              <div className='flex p-1 bg-stone-700 rounded-lg h-10 border border-transparent focus-within:border-fuchsia-500'>
-                <input
-                  placeholder='Cidade onde mora ou gostaria (dos estados Unidos)'
-                  type='text'
-                  id='cidade'
-                  className='w-full h-full bg-transparent outline-none p-2'
+              <GlobalStyles styles={{ height: 40 }} />
+
+                <Autocomplete
+                  options={baseLocations}
+                  renderInput={(params) => <TextField {...params} placeholder='Selecione sua cidade' />}
                 />
-              </div>
+
+
             </label>
             <button
               type='button'
@@ -147,7 +167,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </ThemeProvider>
   );
 };
 
