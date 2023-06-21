@@ -57,7 +57,7 @@ const AuthContextManager: React.FC<IAuthContextManagerProps> = ({
 
   const updateData = useCallback(
     ({ cidade, livros, nascimento }: IEditInfo) => {
-      console.log('aaa');
+
       const newUser: IUserInfo = { ...user } as IUserInfo;
       Object.assign(newUser, { cidade: cidade ? cidade : null });
       Object.assign(newUser, { livros: livros ? livros : null });

@@ -5,4 +5,4 @@ app = Flask(__name__)
 
 
 app = Flask(__name__)
-CORS(app, allow_headers="application/json")
+CORS(app, resources={r"/*": {"origins": "*"}})
