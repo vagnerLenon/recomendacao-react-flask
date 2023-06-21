@@ -305,7 +305,7 @@ const Home: React.FC = () => {
               <hr className='border-stone-600 mt-2 mb-4' />
               <div className='flex justify-between'>
                 <div className='flex items-center gap-4 text-2xl'>
-                  <h2 className=''>Recomendados para você</h2>
+                  <h2 className=''>Livros mais populares</h2>
                   {loadingPopularity && (
                     <FaSpinner size={16} className='animate-spin' />
                   )}
