@@ -1,11 +1,13 @@
+from datetime import date, datetime
+
+import numpy as np
 import pandas as pd
+from flask import request
 
 # Biblioteca de Similaridade por cosseno https://pt.wikipedia.org/wiki/Similaridade_por_cosseno
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
-from flask import request
+
 from . import app
-from datetime import date, datetime
 
 
 def recomendations(idade: int = None, pais: str = None):
@@ -21,7 +23,7 @@ def get_locations():
 @app.route("/books_list", methods=["GET"])
 def get_books_list():
     livros = (
-        pd.read_parquet(r"data\livros_lista.parquert")
+        pd.read_parquet("data/livros_lista.parquert")
         .sort_values("TITLE")
         .drop_duplicates("TITLE")
         .to_dict("records")
@@ -140,8 +142,8 @@ def get_similarity():
     title = request.args.get("title")
 
     def livros_recomendados_similaridade(title: str, quant: int = 5):
-        books_df = pd.read_parquet(r"data\books.parquet")
-        pivot_table_df = pd.read_parquet(r"data\pivot.parquet")
+        books_df = pd.read_parquet("data/books.parquet")
+        pivot_table_df = pd.read_parquet("data/pivot.parquet")
         similaridade_cosseno = cosine_similarity(pivot_table_df)
 
         try:
